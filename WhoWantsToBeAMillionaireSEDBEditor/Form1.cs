@@ -7,6 +7,8 @@ using System.Linq;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml.Serialization;
+using System.Xml;
 
 namespace WhoWantsToBeAMillionaireSEDBEditor
 {
@@ -16,6 +18,8 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
         {
             InitializeComponent();
         }
+
+        public static Settings settings = new Settings(1251, true);
 
         List<f3pStructure> ListQuestions = new List<f3pStructure>();
         List<mqpStructure> CommonListQuestions = new List<mqpStructure>();
@@ -108,11 +112,11 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
                 string c_var = dataGridView1[3, i].Value.ToString() + "\0";
                 string d_var = dataGridView1[4, i].Value.ToString() + "\0";
 
-                question = Methods.ConvertToLatin(question, 1251);
-                a_var = Methods.ConvertToLatin(a_var, 1251);
-                b_var = Methods.ConvertToLatin(b_var, 1251);
-                c_var = Methods.ConvertToLatin(c_var, 1251);
-                d_var = Methods.ConvertToLatin(d_var, 1251);
+                question = Methods.ConvertToLatin(question);
+                a_var = Methods.ConvertToLatin(a_var);
+                b_var = Methods.ConvertToLatin(b_var);
+                c_var = Methods.ConvertToLatin(c_var);
+                d_var = Methods.ConvertToLatin(d_var);
 
 
                 byte[] q_bytes = Encoding.Unicode.GetBytes(question);
@@ -177,7 +181,7 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
         private void Readf3pFiles(byte[] binContent)
         {
             uint begining;
-            uint current_offset = 0;
+            uint current_offset;
             uint next_offset;
 
             byte[] begining_bytes = new byte[4];
@@ -273,6 +277,15 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
             for (int j = 0; j < ListQuestions.Count; j++)
             {
                 dataGridView1.Rows[j].HeaderCell.Value = (j + 1).ToString();
+                if (Form1.settings.NonUnicodeChecked)
+                {
+                    ListQuestions[j].question = Methods.ConvertFromLatin(ListQuestions[j].question);
+                    ListQuestions[j].a_answer = Methods.ConvertFromLatin(ListQuestions[j].a_answer);
+                    ListQuestions[j].b_answer = Methods.ConvertFromLatin(ListQuestions[j].b_answer);
+                    ListQuestions[j].c_answer = Methods.ConvertFromLatin(ListQuestions[j].c_answer);
+                    ListQuestions[j].d_answer = Methods.ConvertFromLatin(ListQuestions[j].d_answer);
+                }
+
                 dataGridView1[0, j].Value = ListQuestions[j].question;
                 dataGridView1[1, j].Value = ListQuestions[j].a_answer;
                 dataGridView1[2, j].Value = ListQuestions[j].b_answer;
@@ -325,11 +338,11 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
 
                     for (int l = 0; l < temp.Count; l++)
                     {
-                        temp[l].question = Methods.ConvertToLatin(temp[l].question, 1251) + "\0";
-                        temp[l].a_answer = Methods.ConvertToLatin(temp[l].a_answer, 1251) + "\0";
-                        temp[l].b_answer = Methods.ConvertToLatin(temp[l].b_answer, 1251) + "\0";
-                        temp[l].c_answer = Methods.ConvertToLatin(temp[l].c_answer, 1251) + "\0";
-                        temp[l].d_answer = Methods.ConvertToLatin(temp[l].d_answer, 1251) + "\0";
+                        temp[l].question = Methods.ConvertToLatin(temp[l].question) + "\0";
+                        temp[l].a_answer = Methods.ConvertToLatin(temp[l].a_answer) + "\0";
+                        temp[l].b_answer = Methods.ConvertToLatin(temp[l].b_answer) + "\0";
+                        temp[l].c_answer = Methods.ConvertToLatin(temp[l].c_answer) + "\0";
+                        temp[l].d_answer = Methods.ConvertToLatin(temp[l].d_answer) + "\0";
 
                         byte[] q_length = Encoding.Unicode.GetBytes(temp[l].question);
                         ms.Write(q_length, 0, q_length.Length);
@@ -444,11 +457,11 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
                     if (BlockList[i].type == "GRTS" && BlockList[i].counter == Convert.ToInt32(dataGridView1[5, j].Value))
                     {
                         string q, a, b, c, d;
-                        q = Methods.ConvertToLatin(dataGridView1[0, j].Value.ToString(), 1251) + "\0";
-                        a = Methods.ConvertToLatin(dataGridView1[1, j].Value.ToString(), 1251) + "\0";
-                        b = Methods.ConvertToLatin(dataGridView1[2, j].Value.ToString(), 1251) + "\0";
-                        c = Methods.ConvertToLatin(dataGridView1[3, j].Value.ToString(), 1251) + "\0";
-                        d = Methods.ConvertToLatin(dataGridView1[4, j].Value.ToString(), 1251) + "\0";
+                        q = Methods.ConvertToLatin(dataGridView1[0, j].Value.ToString()) + "\0";
+                        a = Methods.ConvertToLatin(dataGridView1[1, j].Value.ToString()) + "\0";
+                        b = Methods.ConvertToLatin(dataGridView1[2, j].Value.ToString()) + "\0";
+                        c = Methods.ConvertToLatin(dataGridView1[3, j].Value.ToString()) + "\0";
+                        d = Methods.ConvertToLatin(dataGridView1[4, j].Value.ToString()) + "\0";
 
                         byte[] bin_q = Encoding.Unicode.GetBytes(q);
                         byte[] bin_a = Encoding.Unicode.GetBytes(a);
@@ -640,6 +653,15 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
 
             for (int m = 0; m < dataGridView1.RowCount; m++)
             {
+                if (Form1.settings.NonUnicodeChecked)
+                {
+                    CommonListQuestions[m].question = Methods.ConvertFromLatin(CommonListQuestions[m].question);
+                    CommonListQuestions[m].a_answer = Methods.ConvertFromLatin(CommonListQuestions[m].a_answer);
+                    CommonListQuestions[m].b_answer = Methods.ConvertFromLatin(CommonListQuestions[m].b_answer);
+                    CommonListQuestions[m].c_answer = Methods.ConvertFromLatin(CommonListQuestions[m].c_answer);
+                    CommonListQuestions[m].d_answer = Methods.ConvertFromLatin(CommonListQuestions[m].d_answer);
+                }
+
                 dataGridView1.Rows[m].HeaderCell.Value = (m + 1).ToString();
                 dataGridView1[0, m].Value = CommonListQuestions[m].question;
                 dataGridView1[1, m].Value = CommonListQuestions[m].a_answer;
@@ -666,22 +688,23 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
                     FileStream fs = new FileStream(FullName, FileMode.Open);
                     binContent = Methods.ReadFull(fs);
                     fs.Close();
-                    GetExtension = ofd.FileName.Remove(0, ofd.FileName.IndexOf('.'));
+                    GetExtension = ofd.FileName.Remove(0, FullName.Length - 4);
 
                     switch (GetExtension)
                     {
                         case ".f3p":
-                            //MessageBox.Show("f3p!");
                             ListQuestions.Clear();
                             Readf3pFiles(binContent);
                             break;
                         case ".mqp":
-                            //MessageBox.Show("mqp!");
                             BlockList.Clear();
                             CommonListQuestions.Clear();
                             ReadMQP(binContent);
                             break;
                     }
+
+                    actionsToolStripMenuItem.Enabled = true;
+                    contextMenuStrip1.Enabled = true;
                 }
             }
         }
@@ -794,6 +817,7 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
         private void exportQuestionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFileDialog sfd = new SaveFileDialog();
+
             sfd.Filter = "Text files (*.txt) | *.txt";
             sfd.Title = "Save questions";
 
@@ -804,8 +828,8 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
                 for (int i = 0; i < dataGridView1.RowCount; i++)
                 {
                     str += dataGridView1[0, i].Value.ToString() + "\r\n" + dataGridView1[1, i].Value.ToString()
-                        + " \\ " + dataGridView1[2, i].Value.ToString() + " \\ " + dataGridView1[3, i].Value.ToString()
-                        + " \\ " + dataGridView1[4, i].Value.ToString() + "\r\n";
+                        + "\\" + dataGridView1[2, i].Value.ToString() + "\\" + dataGridView1[3, i].Value.ToString()
+                        + "\\" + dataGridView1[4, i].Value.ToString() + "\r\n";
                 }
 
                 StreamWriter sw = new StreamWriter(sfd.FileName);
@@ -816,5 +840,39 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
             }
         }
 
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new About().ShowDialog();
+        }
+
+        private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new SettingsForm().ShowDialog();
+        }
+
+        private void exportTextsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            exportQuestionsToolStripMenuItem_Click(sender, e);
+        }
+
+        private void importTextsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            importQuestionsToolStripMenuItem_Click(sender, e);
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            if(File.Exists(AppDomain.CurrentDomain.BaseDirectory + "config.xml"))
+            {
+                string xmlPath = AppDomain.CurrentDomain.BaseDirectory + "\\config.xml";
+                XmlReader reader = new XmlTextReader(xmlPath);
+                XmlSerializer settingsDeserializer = new System.Xml.Serialization.XmlSerializer(typeof(Settings));
+                settings = (Settings)settingsDeserializer.Deserialize(reader);
+                reader.Close();
+            }
+
+            actionsToolStripMenuItem.Enabled = false;
+            contextMenuStrip1.Enabled = false;
+        }
     }
 }

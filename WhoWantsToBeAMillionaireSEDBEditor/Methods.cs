@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using System.Text;
+using System.Windows.Forms.VisualStyles;
 
 namespace WhoWantsToBeAMillionaireSEDBEditor
 {
@@ -24,17 +25,31 @@ namespace WhoWantsToBeAMillionaireSEDBEditor
             }
         }
 
-        public static string ConvertToLatin(string str, int ASCII_N)
+        public static string ConvertFromLatin(string str)
         {
             try
             {
-                Encoding Unicode_text = Encoding.Unicode;
-                byte[] temp_string = new byte[str.Length];
-                string temp_str;
-                temp_string = UnicodeEncoding.GetEncoding(ASCII_N).GetBytes(str);
-                temp_str = UnicodeEncoding.GetEncoding(1252).GetString(temp_string);
-                temp_string = Encoding.Convert(UnicodeEncoding.GetEncoding(1252), Unicode_text, temp_string);
-                return Unicode_text.GetString(temp_string);
+                byte[] temp_string = Encoding.Unicode.GetBytes(str);
+                temp_string = Encoding.Convert(Encoding.Unicode, Encoding.GetEncoding(1252), temp_string);
+                temp_string = Encoding.Convert(Encoding.GetEncoding(Form1.settings.ASCIICode), Encoding.Unicode, temp_string);
+                
+                return Encoding.Unicode.GetString(temp_string);
+            }
+            catch
+            {
+                return "Error";
+            }
+        }
+
+        public static string ConvertToLatin(string str)
+        {
+            try
+            {
+                byte[] temp_string = Encoding.Unicode.GetBytes(str);
+                temp_string = Encoding.Convert(Encoding.Unicode, Encoding.GetEncoding(Form1.settings.ASCIICode), temp_string);
+                temp_string = Encoding.Convert(Encoding.GetEncoding(1252), Encoding.Unicode, temp_string);
+
+                return Encoding.Unicode.GetString(temp_string);
             }
             catch
             {
