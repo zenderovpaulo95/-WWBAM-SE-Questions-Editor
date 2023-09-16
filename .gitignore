@@ -1,0 +1,9 @@
+﻿################################################################################
+# Данный GITIGNORE-файл был автоматически создан Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/WhoWantsToBeAMillionaireSEDBEditor
+/WhoWantsToBeAMillionaireSEDBEditor/bin/Debug
+/WhoWantsToBeAMillionaireSEDBEditor/obj/Debug
+/WhoWantsToBeAMillionaireSEDBEditor/bin/Release
+/WhoWantsToBeAMillionaireSEDBEditor/obj/Release
